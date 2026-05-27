@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preparación interactiva: secuencias aritméticas</title>
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #43a600;
+      --blue: #1cb0f6;
+      --blue-dark: #1d4ed8;
+      --yellow: #ffc800;
+      --purple: #a855f7;
+      --red: #ff4b4b;
+      --ink: #243042;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --paper: #ffffff;
+      --bg: #f4f7fb;
+      --shadow: 0 12px 28px rgba(36, 48, 66, .12);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #eaf8ff 0, #f4f7fb 280px),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 34px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: var(--green);
+      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .12);
+      color: #fff;
+      font-weight: 950;
+      font-size: 22px;
+    }
+
+    .math-symbol {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 1px;
+      line-height: .9;
+    }
+
+    .math-symbol sub {
+      position: relative;
+      top: .28em;
+      font-size: .42em;
+      line-height: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(23px, 4vw, 34px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      min-height: 42px;
+      padding: 8px 12px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      font-weight: 900;
+    }
+
+    .stage-nav {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 12px 0 18px;
+    }
+
+    .stage-tab {
+      min-height: 62px;
+      padding: 10px 12px;
+      border: 2px solid var(--line);
+      border-bottom-width: 5px;
+      border-radius: 16px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .stage-tab span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .stage-tab.active {
+      border-color: var(--blue);
+      background: #eff6ff;
+      color: var(--blue-dark);
+    }
+
+    .panel {
+      overflow: hidden;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .94);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      min-height: 154px;
+      padding: 24px;
+      color: #fff;
+      background: linear-gradient(135deg, #1cb0f6, #58cc02);
+    }
+
+    .hero.part-2 {
+      background: linear-gradient(135deg, #1cb0f6, #ffc800);
+    }
+
+    .hero.part-3 {
+      background: linear-gradient(135deg, #1cb0f6, #a855f7);
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(26px, 5vw, 40px);
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 8px 0 0;
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+      gap: 22px;
+      padding: 24px;
+    }
+
+    .explain {
+      display: grid;
+      gap: 14px;
+    }
+
+    .concept {
+      padding: 18px;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .concept h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .concept p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .formula-card {
+      margin-top: 14px;
+      padding: 16px;
+      border: 2px solid #bfdbfe;
+      border-bottom-width: 5px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #eff6ff, #fff);
+      color: #1e3a8a;
+      text-align: center;
+    }
+
+    .equation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: clamp(30px, 5vw, 48px);
+      font-weight: 950;
+      line-height: 1.1;
+    }
+
+    .number-line {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .sequence {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      grid-template-rows: 50px 34px;
+      column-gap: 0;
+      row-gap: 8px;
+      align-items: center;
+      width: max-content;
+      margin: 14px 0;
+    }
+
+    .term {
+      display: grid;
+      place-items: center;
+      min-width: 58px;
+      height: 50px;
+      padding: 0 12px;
+      margin-right: 18px;
+      border: 2px solid #dbeafe;
+      border-bottom-width: 5px;
+      border-radius: 14px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 950;
+      font-size: 20px;
+    }
+
+    .term:last-of-type {
+      margin-right: 0;
+    }
+
+    .step {
+      justify-self: center;
+      transform: translateX(-9px);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #ecfccb;
+      color: #3f6212;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .practice {
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 18px;
+    }
+
+    .practice h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .practice p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .choice {
+      min-height: 52px;
+      border: 2px solid var(--line);
+      border-bottom-width: 5px;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .choice.selected {
+      border-color: var(--blue);
+      background: #e0f2fe;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 12px;
+      border: 2px solid var(--line);
+      border-bottom-width: 5px;
+      border-radius: 14px;
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 900;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .feedback.good {
+      display: block;
+      border: 2px solid #bbf7d0;
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .feedback.bad {
+      display: block;
+      border: 2px solid #fecaca;
+      background: #fff1f2;
+      color: var(--red);
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 24px 24px;
+    }
+
+    .primary,
+    .secondary {
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .primary {
+      border: 0;
+      background: var(--green);
+      color: #fff;
+      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .15);
+    }
+
+    .secondary {
+      border: 2px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .primary:disabled,
+    .secondary:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    @media (max-width: 900px) {
+      .topbar,
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-row {
+        justify-content: flex-start;
+      }
+
+      .stage-nav {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .app {
+        width: min(100% - 18px, 1120px);
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .footer-actions {
+        flex-direction: column-reverse;
+        padding: 0 18px 18px;
+      }
+
+      .primary,
+      .secondary {
+        width: 100%;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">aₙ</div>
+        <div>
+          <h1>Preparación para secuencias aritméticas</h1>
+          <p class="subtitle">Un recurso interactivo para comprender antes de resolver la ruta de retos.</p>
+        </div>
+      </div>
+      <div class="pill-row" aria-label="Progreso">
+        <div class="pill" id="stagePill">Parte 1 de 3</div>
+        <div class="pill" id="readyPill">0 conceptos listos</div>
+      </div>
+    </header>
+
+    <nav class="stage-nav" aria-label="Etapas de aprendizaje">
+      <button class="stage-tab active" type="button" data-stage="0">
+        Parte 1
+        <span>¿Es una secuencia aritmética?</span>
+      </button>
+      <button class="stage-tab" type="button" data-stage="1">
+        Parte 2
+        <span>Predicción de términos</span>
+      </button>
+      <button class="stage-tab" type="button" data-stage="2">
+        Parte 3
+        <span>Regla general</span>
+      </button>
+    </nav>
+
+    <section class="panel">
+      <div class="hero" id="hero">
+        <h2 id="stageTitle">Parte 1: reconocer la diferencia común</h2>
+        <p id="stageIntro">Antes de decidir si una secuencia es aritmética, observa cuánto cambia cada término respecto al anterior.</p>
+      </div>
+
+      <div class="content">
+        <section class="explain" id="explain"></section>
+        <aside class="practice" id="practice"></aside>
+      </div>
+
+      <div class="footer-actions">
+        <button class="secondary" id="prevBtn" type="button">Anterior</button>
+        <button class="primary" id="nextBtn" type="button">Siguiente parte</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const stages = [
+      {
+        title: "Parte 1: reconocer la diferencia común",
+        intro: "Antes de decidir si una secuencia es aritmética, observa cuánto cambia cada término respecto al anterior.",
+        theme: "part-1",
+        concepts: [
+          {
+            title: "Una secuencia es una lista ordenada",
+            text: "El orden importa. No miramos los números por separado, sino el camino que siguen de izquierda a derecha.",
+            sequence: [3, 6, 9, 12],
+            differences: [3, 3, 3]
+          },
+          {
+            title: "La diferencia común es el salto que se repite",
+            text: "Si todos los saltos son iguales, la secuencia es aritmética. Si cambian, no lo es.",
+            sequence: [1, 3, 6, 10],
+            differences: [2, 3, 4]
+          },
+          {
+            title: "También puede disminuir",
+            text: "Una secuencia aritmética puede bajar. En ese caso, la diferencia común es negativa.",
+            sequence: [20, 15, 10, 5],
+            differences: [-5, -5, -5]
+          }
+        ],
+        practice: {
+          kind: "choice",
+          title: "Comprueba la idea",
+          text: "Observa la secuencia 4, 8, 12, 16. ¿Qué afirmación es correcta?",
+          sequence: [4, 8, 12, 16],
+          differences: [4, 4, 4],
+          options: ["Es aritmética porque el salto siempre es +4.", "No es aritmética porque los números son distintos.", "Es aritmética porque termina en 16."],
+          answer: "Es aritmética porque el salto siempre es +4.",
+          good: "Correcto. Lo importante es que el salto se repite: +4, +4 y +4.",
+          bad: "Revisa los saltos. Si todos coinciden, hay diferencia común."
+        }
+      },
+      {
+        title: "Parte 2: predice los términos de una secuencia aritmética",
+        intro: "Para continuar una secuencia aritmética, se suma siempre la misma diferencia común al último término conocido.",
+        theme: "part-2",
+        concepts: [
+          {
+            title: "Predices mirando el último término",
+            text: "No reinicies el patrón desde el principio: toma el último término y súmale la diferencia común.",
+            sequence: [1, 4, 7, 10, "?"],
+            differences: [3, 3, 3, 3]
+          },
+          {
+            title: "Si predices dos términos, avanza dos veces",
+            text: "Primero encuentras el término 5. Después usas ese resultado para encontrar el término 6.",
+            sequence: [2, 7, 12, 17, "?", "?"],
+            differences: [5, 5, 5, 5, 5]
+          },
+          {
+            title: "Los errores aparecen cuando cambia el salto",
+            text: "Si la diferencia común era +4, no puedes usar +5 solo en el último paso.",
+            sequence: [5, 9, 13, 17, 21, 26],
+            differences: [4, 4, 4, 4, 5]
+          }
+        ],
+        practice: {
+          kind: "inputs",
+          title: "Predice dos términos",
+          text: "Completa los términos 5 y 6 de la secuencia 6, 10, 14, 18.",
+          sequence: [6, 10, 14, 18, "?", "?"],
+          differences: [4, 4, 4, 4, 4],
+          fields: [
+            { id: "term5", label: "Término 5", answer: 22 },
+            { id: "term6", label: "Término 6", answer: 26 }
+          ],
+          good: "Muy bien. Sumaste +4 dos veces: 18 + 4 = 22 y 22 + 4 = 26.",
+          bad: "Vuelve al salto común: cada paso suma +4."
+        }
+      },
+      {
+        title: "Parte 3: construir la regla general",
+        intro: "La regla general permite calcular cualquier término sin escribir toda la secuencia.",
+        theme: "part-3",
+        concepts: [
+          {
+            title: "El número que multiplica a n es la diferencia común",
+            text: "En una secuencia aritmética, el coeficiente de n coincide con el salto entre términos.",
+            sequence: [1, 5, 9, 13],
+            differences: [4, 4, 4],
+            formula: "aₙ = 4n + b"
+          },
+          {
+            title: "El valor b ajusta el primer término",
+            text: "Si n = 1, la regla debe producir el primer término. Por eso se prueba con la primera posición.",
+            sequence: [1, 5, 9, 13],
+            differences: [4, 4, 4],
+            formula: "1 = 4 · 1 + b"
+          },
+          {
+            title: "La regla final debe funcionar con todos los términos",
+            text: "Para 1, 5, 9, 13, la regla correcta es la que da 1 cuando n = 1, 5 cuando n = 2, y así sucesivamente.",
+            sequence: [1, 5, 9, 13],
+            differences: [4, 4, 4],
+            formula: "aₙ = 4n - 3"
+          }
+        ],
+        practice: {
+          kind: "formula",
+          title: "Completa la regla",
+          text: "Para la secuencia 4, 7, 10, 13, escribe los valores de a y b.",
+          sequence: [4, 7, 10, 13],
+          differences: [3, 3, 3],
+          fields: [
+            { id: "aValue", label: "Valor de a", answer: 3 },
+            { id: "bValue", label: "Valor de b", answer: 1 }
+          ],
+          good: "Correcto. La regla es aₙ = 3n + 1.",
+          bad: "Primero mira la diferencia común: a = 3. Luego usa el primer término: 4 = 3(1) + b."
+        }
+      }
+    ];
+
+    const state = {
+      stage: 0,
+      completed: new Set(),
+      selected: ""
+    };
+
+    const stagePill = document.querySelector("#stagePill");
+    const readyPill = document.querySelector("#readyPill");
+    const hero = document.querySelector("#hero");
+    const stageTitle = document.querySelector("#stageTitle");
+    const stageIntro = document.querySelector("#stageIntro");
+    const explain = document.querySelector("#explain");
+    const practice = document.querySelector("#practice");
+    const prevBtn = document.querySelector("#prevBtn");
+    const nextBtn = document.querySelector("#nextBtn");
+    const tabs = [...document.querySelectorAll(".stage-tab")];
+
+    function mathSymbol() {
+      return '<span class="math-symbol">a<sub>n</sub></span>';
+    }
+
+    function equationMarkup(text) {
+      const symbol = mathSymbol();
+      const formatSide = (value) => value.trim()
+        .replaceAll("aₙ", symbol)
+        .replaceAll("·", "<span>·</span>");
+      if (!text.includes("=")) return formatSide(text);
+      const [left, ...rightParts] = text.split("=");
+      return `${formatSide(left)}<span>=</span>${formatSide(rightParts.join("="))}`;
+    }
+
+    function sequenceMarkup(sequence, differences) {
+      const cells = [];
+      sequence.forEach((term, index) => {
+        const column = index * 2 + 1;
+        cells.push(`<span class="term" style="grid-column:${column};grid-row:1">${term}</span>`);
+        if (differences && index < differences.length) {
+          const diff = differences[index];
+          cells.push(`<span class="step" style="grid-column:${column + 1};grid-row:2">${diff > 0 ? "+" : ""}${diff}</span>`);
+        }
+      });
+      return `
+        <div class="number-line">
+          <div class="sequence" aria-label="Secuencia">
+            ${cells.join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderConcept(concept) {
+      return `
+        <article class="concept">
+          <h3>${concept.title}</h3>
+          <p>${concept.text}</p>
+          ${sequenceMarkup(concept.sequence, concept.differences)}
+          ${concept.formula ? `
+            <div class="formula-card">
+              <div class="equation">${equationMarkup(concept.formula)}</div>
+            </div>
+          ` : ""}
+        </article>
+      `;
+    }
+
+    function renderPractice(stage) {
+      const item = stage.practice;
+      let body = `
+        <h3>${item.title}</h3>
+        <p>${item.text}</p>
+        ${sequenceMarkup(item.sequence, item.differences)}
+      `;
+
+      if (item.kind === "choice") {
+        body += `
+          <div class="choice-grid">
+            ${item.options.map(option => `<button class="choice" type="button" data-answer="${option}">${option}</button>`).join("")}
+          </div>
+        `;
+      } else {
+        if (item.kind === "formula") {
+          body += `
+            <div class="formula-card">
+              <div class="equation">
+                ${mathSymbol()} <span>=</span> <span>a</span><span>·</span><span>n</span> <span>+</span> <span>b</span>
+              </div>
+            </div>
+          `;
+        }
+        body += `
+          <div class="input-row">
+            ${item.fields.map(field => `
+              <div>
+                <label for="${field.id}">${field.label}</label>
+                <input id="${field.id}" inputmode="numeric" autocomplete="off">
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      body += `
+        <button class="primary" id="checkBtn" type="button" style="width:100%;margin-top:14px;">Comprobar</button>
+        <div class="feedback" id="feedback"></div>
+      `;
+
+      practice.innerHTML = body;
+
+      if (item.kind === "choice") {
+        practice.querySelectorAll(".choice").forEach(button => {
+          button.addEventListener("click", () => {
+            state.selected = button.dataset.answer;
+            practice.querySelectorAll(".choice").forEach(choice => choice.classList.remove("selected"));
+            button.classList.add("selected");
+          });
+        });
+      }
+
+      practice.querySelector("#checkBtn").addEventListener("click", () => checkPractice(item));
+    }
+
+    function checkPractice(item) {
+      let ok = false;
+      if (item.kind === "choice") {
+        ok = state.selected === item.answer;
+      } else {
+        ok = item.fields.every(field => Number(document.querySelector(`#${field.id}`).value.trim()) === field.answer);
+      }
+
+      const feedback = document.querySelector("#feedback");
+      feedback.className = ok ? "feedback good" : "feedback bad";
+      feedback.textContent = ok ? item.good : item.bad;
+      if (ok) state.completed.add(state.stage);
+      renderStatus();
+    }
+
+    function renderStatus() {
+      stagePill.textContent = `Parte ${state.stage + 1} de 3`;
+      readyPill.textContent = `${state.completed.size} conceptos listos`;
+      tabs.forEach((tab, index) => tab.classList.toggle("active", index === state.stage));
+      prevBtn.disabled = state.stage === 0;
+      nextBtn.textContent = state.stage === stages.length - 1 ? "Ir a Misión Secuencia" : "Siguiente parte";
+    }
+
+    function render() {
+      const stage = stages[state.stage];
+      hero.className = `hero ${stage.theme}`;
+      stageTitle.textContent = stage.title;
+      stageIntro.textContent = stage.intro;
+      explain.innerHTML = stage.concepts.map(renderConcept).join("");
+      state.selected = "";
+      renderPractice(stage);
+      renderStatus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        state.stage = Number(tab.dataset.stage);
+        render();
+      });
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (state.stage > 0) {
+        state.stage -= 1;
+        render();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (state.stage === stages.length - 1) {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "go-route" }, "*");
+        } else {
+          window.location.href = "ruta_secuencias_duolingo.html";
+        }
+        return;
+      }
+      state.stage += 1;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

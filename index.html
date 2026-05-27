@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secuencias aritméticas: explicación y Misión Secuencia</title>
+  <style>
+    :root {
+      --green: #58cc02;
+      --blue: #1cb0f6;
+      --ink: #243042;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --paper: #ffffff;
+      --bg: #f4f7fb;
+      --shadow: 0 12px 28px rgba(36, 48, 66, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, #eaf8ff 0, #f4f7fb 280px),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1240px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 0;
+      background: rgba(244, 247, 251, .9);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: var(--green);
+      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .12);
+      color: #fff;
+      font-weight: 950;
+      font-size: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 4vw, 34px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tab,
+    .primary {
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 14px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .tab {
+      border: 2px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .tab.active {
+      border-color: var(--blue);
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .primary {
+      border: 0;
+      background: var(--green);
+      color: #fff;
+      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .15);
+    }
+
+    .frame-card {
+      overflow: hidden;
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .frame-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--line);
+      background: #fff;
+    }
+
+    .frame-label strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .frame-label span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: calc(100vh - 166px);
+      min-height: 720px;
+      border: 0;
+      background: #fff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        justify-content: flex-start;
+      }
+
+      .frame-label {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      iframe {
+        height: calc(100vh - 238px);
+        min-height: 680px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">aₙ</div>
+        <div>
+          <h1>Secuencias aritméticas</h1>
+          <p class="subtitle">Primero comprende la idea; después avanza a Misión Secuencia.</p>
+        </div>
+      </div>
+      <div class="controls" aria-label="Navegación principal">
+        <button class="tab active" id="prepTab" type="button">1. Explicación</button>
+        <button class="tab" id="routeTab" type="button">2. Misión Secuencia</button>
+        <button class="primary" id="nextBtn" type="button">Ir a Misión Secuencia</button>
+      </div>
+    </header>
+
+    <section class="frame-card" id="prepPanel">
+      <div class="frame-label">
+        <div>
+          <strong>Explicación interactiva</strong>
+          <span>Recurso preparatorio en tres partes: diferencia común, predicción y regla general.</span>
+        </div>
+        <button class="primary" type="button" data-go-route>Empezar Misión Secuencia</button>
+      </div>
+      <iframe
+        title="Explicación interactiva de secuencias aritméticas"
+        src="recurso_preparacion_secuencias.html">
+      </iframe>
+    </section>
+
+    <section class="frame-card hidden" id="routePanel">
+      <div class="frame-label">
+        <div>
+          <strong>Misión Secuencia</strong>
+          <span>Retos desbloqueables para practicar lo aprendido en la explicación.</span>
+        </div>
+        <button class="tab" type="button" data-go-prep>Volver a la explicación</button>
+      </div>
+      <iframe
+        title="Ruta de aprendizaje de secuencias aritméticas"
+        src="ruta_secuencias_duolingo.html">
+      </iframe>
+    </section>
+  </main>
+
+  <script>
+    const prepTab = document.querySelector("#prepTab");
+    const routeTab = document.querySelector("#routeTab");
+    const nextBtn = document.querySelector("#nextBtn");
+    const prepPanel = document.querySelector("#prepPanel");
+    const routePanel = document.querySelector("#routePanel");
+
+    function showPanel(panel) {
+      const showRoute = panel === "route";
+      prepPanel.classList.toggle("hidden", showRoute);
+      routePanel.classList.toggle("hidden", !showRoute);
+      prepTab.classList.toggle("active", !showRoute);
+      routeTab.classList.toggle("active", showRoute);
+      nextBtn.textContent = showRoute ? "Volver a la explicación" : "Ir a Misión Secuencia";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    prepTab.addEventListener("click", () => showPanel("prep"));
+    routeTab.addEventListener("click", () => showPanel("route"));
+    nextBtn.addEventListener("click", () => {
+      showPanel(routePanel.classList.contains("hidden") ? "route" : "prep");
+    });
+
+    document.querySelectorAll("[data-go-route]").forEach(button => {
+      button.addEventListener("click", () => showPanel("route"));
+    });
+
+    document.querySelectorAll("[data-go-prep]").forEach(button => {
+      button.addEventListener("click", () => showPanel("prep"));
+    });
+
+    window.addEventListener("message", (event) => {
+      if (event.data && event.data.type === "go-route") {
+        showPanel("route");
+      }
+    });
+  </script>
+</body>
+</html>
